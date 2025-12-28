@@ -37,6 +37,14 @@ assets/
 
 - `audioplayers` - Audio playback
 
+## Web Deployment
+
+```bash
+flutter build web --release --base-href "/phonics/alphabet/"
+```
+
+Upload `build/web/` contents to server. No code changes needed for web.
+
 ## Asset Conventions
 
 **Audio:** `assets/audio/{letter}.mp3` (e.g., `a.mp3`)
