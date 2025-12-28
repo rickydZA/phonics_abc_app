@@ -11,6 +11,9 @@ import '../widgets/letter_popup.dart';
 const String _appStoreUrl = 'https://apps.apple.com/app/id000000000';
 const String _playStoreUrl = 'https://play.google.com/store/apps/details?id=com.example.phonics_abc_app';
 
+// Height of the site header (web only)
+const double _webHeaderHeight = 60.0;
+
 class AlphabetScreen extends StatelessWidget {
   const AlphabetScreen({super.key});
 
@@ -19,27 +22,28 @@ class AlphabetScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            // App store badges (web only)
-            if (kIsWeb) _buildStoreBadges(),
-            // Letter grid
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final crossAxisCount = _calculateColumns(constraints.maxWidth);
+        // Add top padding for web header
+        top: !kIsWeb, // Only use SafeArea top on mobile
+        child: Padding(
+          padding: EdgeInsets.only(top: kIsWeb ? _webHeaderHeight : 0),
+          child: LayoutBuilder(
+          builder: (context, constraints) {
+            final crossAxisCount = _calculateColumns(constraints.maxWidth);
 
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 1,
-                      ),
-                      itemCount: alphabetData.length,
-                      itemBuilder: (context, index) {
+            return CustomScrollView(
+              slivers: [
+                // Letter grid
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 1,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
                         final letter = alphabetData[index];
                         return LetterTile(
                           letter: letter.letter,
@@ -47,39 +51,38 @@ class AlphabetScreen extends StatelessWidget {
                           onTap: () => _onLetterTap(context, letter, index),
                         );
                       },
-                    );
-                  },
+                      childCount: alphabetData.length,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ],
+                // App store badges (web only) - after alphabet
+                if (kIsWeb)
+                  SliverToBoxAdapter(
+                    child: _buildStoreBadges(),
+                  ),
+              ],
+            );
+          },
+        ),
         ),
       ),
     );
   }
 
   Widget _buildStoreBadges() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+    return Padding(
+      padding: const EdgeInsets.only(top: 32, bottom: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'Get the app:',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black54,
-            ),
-          ),
-          const SizedBox(width: 12),
           _StoreBadge(
-            imageUrl: 'https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg',
+            imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/200px-Download_on_the_App_Store_Badge.svg.png',
             storeUrl: _appStoreUrl,
             alt: 'App Store',
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 16),
           _StoreBadge(
-            imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg',
+            imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/200px-Google_Play_Store_badge_EN.svg.png',
             storeUrl: _playStoreUrl,
             alt: 'Google Play',
           ),
@@ -128,7 +131,7 @@ class _StoreBadge extends StatelessWidget {
         onTap: () => _launchUrl(storeUrl),
         child: Image.network(
           imageUrl,
-          height: 36,
+          height: 50,
           errorBuilder: (context, error, stackTrace) {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
