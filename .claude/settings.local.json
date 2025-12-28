@@ -3,7 +3,11 @@
     "allow": [
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh repo create:*)",
+      "Bash(flutter pub get:*)",
+      "Bash(flutter analyze:*)"
     ]
   }
 }
