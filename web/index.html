@@ -29,10 +29,53 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>phonics_abc_app</title>
+  <title>Phonics ABC</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      margin: 0;
+      background-color: #81D4FA;
+    }
+    .loading {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .loading h1 {
+      font-size: 96px;
+      font-weight: bold;
+      color: white;
+      margin: 0;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+    }
+    .loading p {
+      font-size: 36px;
+      font-weight: 500;
+      color: white;
+      margin: 8px 0 48px 0;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
+  <div id="loading" class="loading">
+    <h1>ABC</h1>
+    <p>Phonics</p>
+    <div class="spinner"></div>
+  </div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
