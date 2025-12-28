@@ -1,0 +1,78 @@
+ABC PHONICS APP
+AI Image Generation Prompts
+========================================
+
+PROJECT INFORMATION
+-------------------
+Model: Flux.2 Flex
+Target Audience: Young children (ages 3-6)
+Total Images: 26 (one per letter)
+
+
+PROMPT TEMPLATE
+---------------
+A cute [OBJECT], soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+
+ALL PROMPTS
+-----------
+
+A: A cute shiny red apple, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+B: A cute colorful bouncy ball, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+C: A cute fluffy orange cat sitting, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+D: A cute friendly brown dog sitting, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+E: A cute friendly gray elephant, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+F: A cute orange and yellow fish, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+G: A cute friendly black gorilla, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+H: A cute colorful party hat, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+I: A cute small igloo in the snow, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+J: A cute jar of strawberry jam, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+K: A cute colorful kite flying, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+L: A cute friendly golden lion, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+M: A cute playful brown monkey, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+N: A cute friendly nurse in uniform, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+O: A cute purple octopus, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+P: A cute pink pig, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+Q: A cute friendly queen wearing a crown, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+R: A cute bright rainbow arc, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+S: A cute smiling yellow sun with rays, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+T: A cute friendly green turtle, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+U: A cute colorful open umbrella, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+V: A cute brown wooden violin, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+W: A cute window with colorful curtains, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+X: A cute orange fox sitting, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+Y: A cute yellow paintbrush with yellow paint, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+Z: A cute friendly zebra, soft 3D render, bright saturated colors, centered composition, simple minimal background with soft gradient, friendly and appealing for young children, rounded shapes, soft lighting, high quality
+
+
+TIPS FOR CONSISTENCY
+--------------------
+1. Keep the template identical — only change the object and its color/descriptor
+2. Use similar object descriptions — "a cute [color] [object]" keeps the tone uniform
+3. Generate in batches — if Flux allows seeds or style references, use them
+4. Regenerate outliers — if one image looks different, regenerate rather than keeping it
