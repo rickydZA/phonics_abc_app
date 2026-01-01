@@ -55,11 +55,12 @@ class AlphabetScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // App store badges (web only) - after alphabet
-                if (kIsWeb)
-                  SliverToBoxAdapter(
-                    child: _buildStoreBadges(),
-                  ),
+                // App store badges (web only) - temporarily disabled
+                // TODO: Re-enable when apps are live on stores
+                // if (kIsWeb)
+                //   SliverToBoxAdapter(
+                //     child: _buildStoreBadges(),
+                //   ),
               ],
             );
           },
