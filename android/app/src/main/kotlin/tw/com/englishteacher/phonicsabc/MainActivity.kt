@@ -1,4 +1,4 @@
-package com.example.phonics_abc_app
+package tw.com.englishteacher.phonicsabc
 
 import io.flutter.embedding.android.FlutterActivity
 
