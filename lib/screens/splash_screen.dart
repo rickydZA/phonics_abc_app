@@ -11,6 +11,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String _statusMessage = 'Starting...';
+
   @override
   void initState() {
     super.initState();
@@ -18,10 +20,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initializeApp() async {
-    // Initialize audio service (preload audio files)
+    // Step 1: Initialize audio service
+    setState(() {
+      _statusMessage = 'Loading audio files...';
+    });
     await AudioService().init();
 
-    // Small delay to show splash screen
+    // Step 2: Ready
+    setState(() {
+      _statusMessage = 'Ready!';
+    });
+
+    // Small delay to show "Ready!" message
     await Future.delayed(const Duration(milliseconds: 500));
 
     // Navigate to alphabet screen
@@ -71,6 +81,15 @@ class _SplashScreenState extends State<SplashScreen> {
             // Loading indicator
             const CircularProgressIndicator(
               color: AppColors.textLight,
+            ),
+            const SizedBox(height: 24),
+            // Status message
+            Text(
+              _statusMessage,
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColors.textLight,
+              ),
             ),
           ],
         ),
