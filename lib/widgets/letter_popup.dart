@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../data/letter_data.dart';
+import '../services/audio_service.dart';
 
 class LetterPopup extends StatelessWidget {
   final LetterData letterData;
@@ -14,15 +15,19 @@ class LetterPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final popupWidth = (screenWidth * 0.85).clamp(280.0, 400.0);
+    final imageSize = popupWidth - 32; // 16px padding each side
+
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 350),
+        constraints: BoxConstraints(maxWidth: popupWidth),
         decoration: BoxDecoration(
           color: AppColors.popupBackground,
           borderRadius: BorderRadius.circular(24),
         ),
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -69,10 +74,10 @@ class LetterPopup extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             // Image or fallback
-            _buildImage(),
-            const SizedBox(height: 24),
+            _buildImage(imageSize),
+            const SizedBox(height: 16),
             // Word text
             Text(
               letterData.capitalizedWord,
@@ -88,35 +93,49 @@ class LetterPopup extends StatelessWidget {
     );
   }
 
-  Widget _buildImage() {
+  Widget _buildImage(double size) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
-      child: Image.asset(
-        letterData.imagePath,
-        width: 200,
-        height: 200,
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) {
-          // Fallback: colored circle with letter
-          return Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              color: tileColor.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                letterData.imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Fallback: colored circle with letter
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: tileColor.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        letterData.upperCase,
+                        style: TextStyle(
+                          fontSize: size * 0.5,
+                          fontWeight: FontWeight.bold,
+                          color: tileColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-            child: Center(
-              child: Text(
-                letterData.upperCase,
-                style: TextStyle(
-                  fontSize: 100,
-                  fontWeight: FontWeight.bold,
-                  color: tileColor,
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => AudioService().play(letterData.letter),
                 ),
               ),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }

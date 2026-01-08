@@ -22,7 +22,7 @@ const List<LetterData> alphabetData = [
   LetterData(letter: 'C', word: 'cat', imagePath: 'assets/images/c_cat.webp', audioPath: 'assets/audio/c.mp3'),
   LetterData(letter: 'D', word: 'dog', imagePath: 'assets/images/d_dog.webp', audioPath: 'assets/audio/d.mp3'),
   LetterData(letter: 'E', word: 'elephant', imagePath: 'assets/images/e_elephant.webp', audioPath: 'assets/audio/e.mp3'),
-  LetterData(letter: 'F', word: 'fish', imagePath: 'assets/images/f_fish.webp', audioPath: 'assets/audio/f.mp3'),
+  LetterData(letter: 'F', word: 'frog', imagePath: 'assets/images/f_frog.webp', audioPath: 'assets/audio/f.mp3'),
   LetterData(letter: 'G', word: 'gorilla', imagePath: 'assets/images/g_gorilla.webp', audioPath: 'assets/audio/g.mp3'),
   LetterData(letter: 'H', word: 'hat', imagePath: 'assets/images/h_hat.webp', audioPath: 'assets/audio/h.mp3'),
   LetterData(letter: 'I', word: 'igloo', imagePath: 'assets/images/i_igloo.webp', audioPath: 'assets/audio/i.mp3'),
