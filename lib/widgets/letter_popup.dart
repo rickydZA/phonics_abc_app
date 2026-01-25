@@ -5,7 +5,7 @@ import '../constants/branding.dart';
 import '../data/letter_data.dart';
 import '../services/audio_service.dart';
 
-class LetterPopup extends StatelessWidget {
+class LetterPopup extends StatefulWidget {
   final LetterData letterData;
   final Color tileColor;
 
@@ -14,6 +14,13 @@ class LetterPopup extends StatelessWidget {
     required this.letterData,
     required this.tileColor,
   });
+
+  @override
+  State<LetterPopup> createState() => _LetterPopupState();
+}
+
+class _LetterPopupState extends State<LetterPopup> {
+  bool _isLaunching = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,20 +65,20 @@ class LetterPopup extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  letterData.upperCase,
+                  widget.letterData.upperCase,
                   style: TextStyle(
                     fontSize: 72,
                     fontWeight: FontWeight.bold,
-                    color: tileColor,
+                    color: widget.tileColor,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Text(
-                  letterData.lowerCase,
+                  widget.letterData.lowerCase,
                   style: TextStyle(
                     fontSize: 72,
                     fontWeight: FontWeight.bold,
-                    color: tileColor,
+                    color: widget.tileColor,
                   ),
                 ),
               ],
@@ -82,11 +89,11 @@ class LetterPopup extends StatelessWidget {
             const SizedBox(height: 16),
             // Word text
             Text(
-              letterData.capitalizedWord,
+              widget.letterData.capitalizedWord,
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w600,
-                color: tileColor,
+                color: widget.tileColor,
               ),
             ),
             const SizedBox(height: 12),
@@ -104,6 +111,22 @@ class LetterPopup extends StatelessWidget {
                         width: 20,
                         height: 20,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Fallback: show small icon if mascot image fails
+                          return Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: AppColors.textPrimary.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.school,
+                              size: 12,
+                              color: AppColors.textPrimary.withValues(alpha: 0.4),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(width: 6),
@@ -135,7 +158,7 @@ class LetterPopup extends StatelessWidget {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
         // Show message if no browser available (common on emulators)
-        if (context.mounted) {
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Visit: ${Branding.website}'),
@@ -146,13 +169,54 @@ class LetterPopup extends StatelessWidget {
       }
     } catch (e) {
       // Handle launch errors gracefully
-      if (context.mounted) {
+      debugPrint('Error launching website: $e');
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Visit: ${Branding.website}'),
             duration: const Duration(seconds: 3),
           ),
         );
+      }
+    }
+  }
+
+  Future<void> _launchPodcast(String url) async {
+    if (_isLaunching) return;
+
+    setState(() {
+      _isLaunching = true;
+    });
+
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Cannot open podcast link'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error launching podcast: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error opening podcast'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLaunching = false;
+        });
       }
     }
   }
@@ -167,22 +231,22 @@ class LetterPopup extends StatelessWidget {
           children: [
             Positioned.fill(
               child: Image.asset(
-                letterData.imagePath,
+                widget.letterData.imagePath,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   // Fallback: colored circle with letter
                   return Container(
                     decoration: BoxDecoration(
-                      color: tileColor.withValues(alpha: 0.2),
+                      color: widget.tileColor.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: Text(
-                        letterData.upperCase,
+                        widget.letterData.upperCase,
                         style: TextStyle(
                           fontSize: size * 0.5,
                           fontWeight: FontWeight.bold,
-                          color: tileColor,
+                          color: widget.tileColor,
                         ),
                       ),
                     ),
@@ -194,7 +258,45 @@ class LetterPopup extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => AudioService().play(letterData.letter),
+                  onTap: () => AudioService().play(widget.letterData.letter),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: _isLaunching ? null : () => _launchPodcast(widget.letterData.podcastUrl),
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: _isLaunching
+                        ? Colors.grey.withValues(alpha: 0.9)
+                        : Colors.white.withValues(alpha: 0.9),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: _isLaunching
+                      ? SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(widget.tileColor),
+                          ),
+                        )
+                      : Icon(
+                          Icons.headphones,
+                          size: 16,
+                          color: widget.tileColor,
+                        ),
                 ),
               ),
             ),
