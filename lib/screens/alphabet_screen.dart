@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_colors.dart';
+import '../constants/branding.dart';
 import '../data/letter_data.dart';
 import '../services/audio_service.dart';
 import '../widgets/letter_tile.dart';
@@ -32,6 +33,10 @@ class AlphabetScreen extends StatelessWidget {
 
             return CustomScrollView(
               slivers: [
+                // Teacher branding header
+                SliverToBoxAdapter(
+                  child: _buildBrandingHeader(context),
+                ),
                 // Letter grid
                 SliverPadding(
                   padding: const EdgeInsets.all(16),
@@ -65,6 +70,57 @@ class AlphabetScreen extends StatelessWidget {
             );
           },
         ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBrandingHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryLight.withValues(alpha: 0.1),
+            AppColors.background,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Center(
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () => _launchWebsite(context),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Mascot image
+                ClipOval(
+                  child: Image.asset(
+                    Branding.mascotPath,
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Brand text
+                Text(
+                  Branding.recommendedBy,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textPrimary.withValues(alpha: 0.6),
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0.5,
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.dotted,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -110,6 +166,36 @@ class AlphabetScreen extends StatelessWidget {
       letter,
       AppColors.getTileColor(index),
     );
+  }
+
+  Future<void> _launchWebsite(BuildContext context) async {
+    final uri = Uri.parse('http://${Branding.website}');
+    try {
+      final canLaunch = await canLaunchUrl(uri);
+      if (canLaunch) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        // Show message if no browser available (common on emulators)
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Visit: ${Branding.website}'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Handle launch errors gracefully
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Visit: ${Branding.website}'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }
 

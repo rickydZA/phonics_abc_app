@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_colors.dart';
+import '../constants/branding.dart';
 import '../data/letter_data.dart';
 import '../services/audio_service.dart';
 
@@ -87,10 +89,72 @@ class LetterPopup extends StatelessWidget {
                 color: tileColor,
               ),
             ),
+            const SizedBox(height: 12),
+            // Teacher branding with mascot
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () => _launchWebsite(context),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipOval(
+                      child: Image.asset(
+                        Branding.mascotPath,
+                        width: 20,
+                        height: 20,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      Branding.teacherName,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textPrimary.withValues(alpha: 0.4),
+                        fontWeight: FontWeight.w300,
+                        decoration: TextDecoration.underline,
+                        decorationStyle: TextDecorationStyle.dotted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _launchWebsite(BuildContext context) async {
+    final uri = Uri.parse('http://${Branding.website}');
+    try {
+      final canLaunch = await canLaunchUrl(uri);
+      if (canLaunch) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        // Show message if no browser available (common on emulators)
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Visit: ${Branding.website}'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Handle launch errors gracefully
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Visit: ${Branding.website}'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildImage(double size) {

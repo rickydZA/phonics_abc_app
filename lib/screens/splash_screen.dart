@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../constants/branding.dart';
 import '../services/audio_service.dart';
 import 'alphabet_screen.dart';
 
@@ -90,6 +91,30 @@ class _SplashScreenState extends State<SplashScreen> {
                 fontSize: 16,
                 color: AppColors.textLight,
               ),
+            ),
+            const SizedBox(height: 60),
+            // Teacher branding with mascot
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipOval(
+                  child: Image.asset(
+                    Branding.mascotPath,
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  Branding.recommendedBy,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textLight.withValues(alpha: 0.7),
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
