@@ -169,7 +169,7 @@ class AlphabetScreen extends StatelessWidget {
   }
 
   Future<void> _launchWebsite(BuildContext context) async {
-    final uri = Uri.parse('http://${Branding.website}');
+    final uri = Uri.parse(Branding.website);
     try {
       final canLaunch = await canLaunchUrl(uri);
       if (canLaunch) {
