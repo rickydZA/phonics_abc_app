@@ -10,7 +10,7 @@ Request for DNS Configuration
 Please add the following DNS record to my domain `englishteacher.com.tw`:
 
 Record Type: CNAME
-Host/Name: phonicsabc
+Host/Name: englishabc
 Value/Points to: rickydza.github.io
 TTL: 3600 (or default)
 
@@ -25,7 +25,7 @@ DNS 設定需求
 麻煩您協助在我的網域 `englishteacher.com.tw` 中新增以下 DNS 記錄：
 
 記錄類型（Record Type）： CNAME
-主機名稱（Host/Name）： phonicsabc
+主機名稱（Host/Name）： englishabc
 指向位址（Points to）： rickydza.github.io
 存活時間（TTL）： 3600（或使用預設值）
 
@@ -39,7 +39,7 @@ RESULT
 After DNS propagation, the custom domain will be:
 完成 DNS 設定後，自訂網域將為：
 
-https://phonicsabc.englishteacher.com.tw
+https://englishabc.englishteacher.com.tw
 
 DNS propagation time: Up to 24 hours
 DNS 傳播時間：最多 24 小時
