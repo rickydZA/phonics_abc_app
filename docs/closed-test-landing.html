@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English ABCs - Closed Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans TC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .mascot {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 50%;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .mascot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .features {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 18px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 30px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+        }
+
+        .branding {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .branding a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .branding a:hover {
+            text-decoration: underline;
+        }
+
+        .lang-switch {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .lang-switch button {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .lang-switch button:hover,
+        .lang-switch button.active {
+            background: white;
+            color: #667eea;
+        }
+
+        [lang="en"] .zh-only,
+        [lang="zh-TW"] .en-only {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="lang-switch">
+                <button onclick="setLanguage('en')" id="btn-en">English</button>
+                <button onclick="setLanguage('zh-TW')" id="btn-zh" class="active">繁體中文</button>
+            </div>
+
+            <div class="mascot">
+                <img src="../assets/images/little_chick_mascot_3D.png" alt="Mascot">
+            </div>
+
+            <h1>English ABCs</h1>
+            <p class="tagline en-only">Learn ABCs with phonics! Tap letters to hear sounds and see fun pictures.</p>
+            <p class="tagline zh-only">用自然發音學習英文字母！點擊字母就能聽發音、看有趣圖片。</p>
+        </div>
+
+        <div class="content">
+            <div class="section en-only">
+                <h2>Join Our Closed Testing</h2>
+                <p>Help us improve English ABCs by becoming a tester! Get early access to the app and provide valuable feedback.</p>
+
+                <ul class="features">
+                    <li>Complete A-Z alphabet with beautiful illustrations</li>
+                    <li>Clear phonics pronunciation for each letter</li>
+                    <li>Fun audio chants to remember sounds</li>
+                    <li>No ads, no in-app purchases</li>
+                    <li>Works offline</li>
+                </ul>
+            </div>
+
+            <div class="section zh-only">
+                <h2>加入我們的封閉測試</h2>
+                <p>成為測試者來幫助我們改進 English ABCs！搶先體驗應用程式並提供寶貴的意見回饋。</p>
+
+                <ul class="features">
+                    <li>完整的 A-Z 字母表，配有精美插圖</li>
+                    <li>每個字母都有清楚的自然發音</li>
+                    <li>有趣的語音吟唱幫助記住發音</li>
+                    <li>無廣告、無應用程式內購買</li>
+                    <li>離線可用</li>
+                </ul>
+            </div>
+
+            <a href="YOUR_GOOGLE_PLAY_OPT_IN_LINK_HERE" class="cta-button" id="cta-button">
+                <span class="en-only">Become a Tester</span>
+                <span class="zh-only">成為測試者</span>
+            </a>
+
+            <div class="instructions">
+                <h3 class="en-only">How to Join:</h3>
+                <h3 class="zh-only">如何加入：</h3>
+                <ol class="en-only">
+                    <li>Click the "Become a Tester" button above</li>
+                    <li>Sign in with your Google account</li>
+                    <li>Accept the testing invitation</li>
+                    <li>Download the app from Google Play Store</li>
+                    <li>Start learning and share your feedback!</li>
+                </ol>
+                <ol class="zh-only">
+                    <li>點擊上方的「成為測試者」按鈕</li>
+                    <li>使用您的 Google 帳號登入</li>
+                    <li>接受測試邀請</li>
+                    <li>從 Google Play 商店下載應用程式</li>
+                    <li>開始學習並分享您的意見回饋！</li>
+                </ol>
+                <p class="en-only" style="margin-top: 15px;"><strong>Requirements:</strong> Google account and Android device</p>
+                <p class="zh-only" style="margin-top: 15px;"><strong>需求：</strong>Google 帳號和 Android 裝置</p>
+            </div>
+        </div>
+
+        <div class="branding">
+            <p class="en-only">Recommended by <strong>李之茗外師英</strong></p>
+            <p class="zh-only"><strong>李之茗外師英</strong> 推薦</p>
+            <a href="https://www.englishteacher.com.tw/xsst/ywgssj/" target="_blank">www.englishteacher.com.tw</a>
+        </div>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-zh').classList.toggle('active', lang === 'zh-TW');
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // Load saved language preference or default to Chinese
+        const savedLang = localStorage.getItem('preferredLanguage') || 'zh-TW';
+        setLanguage(savedLang);
+    </script>
+</body>
+</html>
