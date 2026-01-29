@@ -2,9 +2,10 @@
 // This script receives feedback submissions and stores them in Google Sheets
 
 // ========== CONFIGURATION ==========
-// Set your email address here to receive notifications
-var NOTIFICATION_EMAIL = 'your-email@example.com'; // CHANGE THIS!
-var SEND_NOTIFICATIONS = true; // Set to false to disable email notifications
+// Set your email address here to receive daily digest
+var NOTIFICATION_EMAIL = 'rich.dipp@gmail.com';
+var SEND_DAILY_DIGEST = true; // Set to false to disable daily digest emails
+var DIGEST_TIME_HOUR = 20; // Hour to send digest (0-23, in your timezone). 20 = 8:00 PM
 // ===================================
 
 function doPost(e) {
@@ -47,15 +48,8 @@ function doPost(e) {
     // Log success
     Logger.log('Feedback submitted successfully at ' + timestamp);
 
-    // Send email notification
-    if (SEND_NOTIFICATIONS) {
-      try {
-        sendEmailNotification(data, timestamp);
-      } catch (emailError) {
-        // Log email error but don't fail the submission
-        Logger.log('Email notification failed: ' + emailError.toString());
-      }
-    }
+    // Note: Email notifications are sent as daily digest
+    // No immediate email sent to avoid inbox flooding
 
     // Return success response with CORS headers
     return createResponse({
@@ -105,7 +99,8 @@ function getOrCreateSheet() {
       'Issue Details',
       'Suggestions',
       'Would Recommend',
-      'Other Comments'
+      'Other Comments',
+      'Emailed'
     ];
 
     sheet.appendRow(headers);
@@ -139,12 +134,224 @@ function getOrCreateSheet() {
       'Issue Details',
       'Suggestions',
       'Would Recommend',
-      'Other Comments'
+      'Other Comments',
+      'Emailed'
     ];
     sheet.appendRow(headers);
   }
 
   return sheet;
+}
+
+// Function to send daily digest email
+// This should be triggered once per day via a time-based trigger
+function sendDailyDigest() {
+  if (!SEND_DAILY_DIGEST) {
+    Logger.log('Daily digest disabled in configuration');
+    return;
+  }
+
+  if (!NOTIFICATION_EMAIL || NOTIFICATION_EMAIL === 'your-email@example.com') {
+    Logger.log('Daily digest skipped: No valid email configured');
+    return;
+  }
+
+  var sheet = getOrCreateSheet();
+  var lastRow = sheet.getLastRow();
+
+  if (lastRow <= 1) {
+    Logger.log('No feedback submissions to send');
+    return;
+  }
+
+  // Get all data
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+
+  // Find the "Emailed" column index
+  var emailedColIndex = headers.indexOf('Emailed');
+  if (emailedColIndex === -1) {
+    Logger.log('Error: Emailed column not found');
+    return;
+  }
+
+  // Find new submissions (where Emailed column is empty)
+  var newSubmissions = [];
+  for (var i = 1; i < data.length; i++) {
+    if (!data[i][emailedColIndex]) {
+      newSubmissions.push({
+        rowIndex: i + 1, // +1 because sheet rows are 1-indexed
+        data: data[i]
+      });
+    }
+  }
+
+  if (newSubmissions.length === 0) {
+    Logger.log('No new feedback since last digest');
+    return;
+  }
+
+  // Build digest email
+  var subject = '📊 Daily Feedback Digest: English ABCs (' + newSubmissions.length + ' new)';
+  var body = buildDigestEmail(newSubmissions, headers);
+
+  // Send email
+  try {
+    MailApp.sendEmail({
+      to: NOTIFICATION_EMAIL,
+      subject: subject,
+      body: body
+    });
+
+    // Mark submissions as emailed
+    for (var i = 0; i < newSubmissions.length; i++) {
+      sheet.getRange(newSubmissions[i].rowIndex, emailedColIndex + 1)
+        .setValue(new Date());
+    }
+
+    Logger.log('Daily digest sent: ' + newSubmissions.length + ' submissions to ' + NOTIFICATION_EMAIL);
+  } catch (error) {
+    Logger.log('Failed to send daily digest: ' + error.toString());
+  }
+}
+
+// Helper function to build digest email body
+function buildDigestEmail(submissions, headers) {
+  var now = new Date();
+  var dateStr = Utilities.formatDate(now, Session.getScriptTimeZone(), 'EEEE, MMMM d, yyyy');
+
+  var body = 'English ABCs - Feedback Digest\n';
+  body += dateStr + '\n';
+  body += '═══════════════════════════════════════════════\n\n';
+  body += '📝 You received ' + submissions.length + ' new feedback submission(s)\n\n';
+
+  // Summary statistics
+  var stats = calculateStats(submissions, headers);
+  body += '📊 SUMMARY:\n';
+  body += '  • Average Overall Rating: ' + stats.avgOverall + '/5 ' + stats.avgOverallStars + '\n';
+  body += '  • Average Child Engagement: ' + stats.avgEngagement + '/5 ' + stats.avgEngagementEmoji + '\n';
+  body += '  • Would Recommend: ' + stats.recommendPercent + '% (Definitely/Probably)\n';
+  body += '  • Technical Issues Reported: ' + stats.issuesCount + '\n';
+  body += '\n';
+
+  // Individual submissions
+  body += '═══════════════════════════════════════════════\n\n';
+
+  for (var i = 0; i < submissions.length; i++) {
+    var sub = submissions[i].data;
+    var submissionNum = i + 1;
+
+    body += '━━━ FEEDBACK #' + submissionNum + ' ━━━\n\n';
+
+    // Extract data by column name
+    var timestamp = sub[headers.indexOf('Timestamp')];
+    var language = sub[headers.indexOf('Language')];
+    var overallRating = sub[headers.indexOf('Overall Rating')];
+    var easeOfUse = sub[headers.indexOf('Ease of Use')];
+    var childEngagement = sub[headers.indexOf('Child Engagement')];
+    var learningValue = sub[headers.indexOf('Learning Value')];
+    var childEnjoyed = sub[headers.indexOf('Child Enjoyed Most')];
+    var issues = sub[headers.indexOf('Issues Encountered')];
+    var issueDetails = sub[headers.indexOf('Issue Details')];
+    var suggestions = sub[headers.indexOf('Suggestions')];
+    var recommend = sub[headers.indexOf('Would Recommend')];
+    var otherComments = sub[headers.indexOf('Other Comments')];
+
+    // Format ratings
+    var overallStars = '⭐'.repeat(parseInt(overallRating) || 0);
+    var engagementEmojis = ['😞', '😕', '😐', '😊', '😍'];
+    var engagementDisplay = engagementEmojis[parseInt(childEngagement) - 1] || childEngagement;
+    var langLabel = language === 'en' ? 'English' : '中文';
+
+    body += '⏰ ' + timestamp + ' (' + langLabel + ')\n\n';
+
+    body += '📊 Ratings:\n';
+    body += '  Overall: ' + overallStars + ' (' + overallRating + '/5)\n';
+    body += '  Ease of Use: ' + easeOfUse + '\n';
+    body += '  Child Engagement: ' + engagementDisplay + ' (' + childEngagement + '/5)\n';
+    body += '  Learning Value: ' + learningValue + '\n';
+    body += '  Would Recommend: ' + recommend + '\n\n';
+
+    if (issues && issues.trim()) {
+      body += '🐛 Issues: ' + issues + '\n';
+      if (issueDetails && issueDetails.trim()) {
+        body += '   Details: ' + issueDetails.trim() + '\n';
+      }
+      body += '\n';
+    }
+
+    if (childEnjoyed && childEnjoyed.trim()) {
+      body += '💚 Child Enjoyed:\n   ' + childEnjoyed.trim() + '\n\n';
+    }
+
+    if (suggestions && suggestions.trim()) {
+      body += '💡 Suggestions:\n   ' + suggestions.trim() + '\n\n';
+    }
+
+    if (otherComments && otherComments.trim()) {
+      body += '💬 Other Comments:\n   ' + otherComments.trim() + '\n\n';
+    }
+
+    if (i < submissions.length - 1) {
+      body += '\n';
+    }
+  }
+
+  body += '═══════════════════════════════════════════════\n';
+  body += '📊 View full spreadsheet:\n';
+  body += SpreadsheetApp.getActiveSpreadsheet().getUrl() + '\n';
+  body += '═══════════════════════════════════════════════\n\n';
+  body += 'English ABCs - Feedback Handler\n';
+  body += '李之茗外師 | www.englishteacher.com.tw\n';
+
+  return body;
+}
+
+// Helper function to calculate statistics
+function calculateStats(submissions, headers) {
+  var totalOverall = 0;
+  var totalEngagement = 0;
+  var recommendCount = 0;
+  var issuesCount = 0;
+  var count = submissions.length;
+
+  for (var i = 0; i < submissions.length; i++) {
+    var sub = submissions[i].data;
+
+    var overallRating = parseInt(sub[headers.indexOf('Overall Rating')]) || 0;
+    var childEngagement = parseInt(sub[headers.indexOf('Child Engagement')]) || 0;
+    var recommend = sub[headers.indexOf('Would Recommend')];
+    var issues = sub[headers.indexOf('Issues Encountered')];
+
+    totalOverall += overallRating;
+    totalEngagement += childEngagement;
+
+    if (recommend === 'Definitely' || recommend === 'Probably' ||
+        recommend === 'definitely' || recommend === 'probably') {
+      recommendCount++;
+    }
+
+    if (issues && issues.toLowerCase().indexOf('no issues') === -1 && issues.trim()) {
+      issuesCount++;
+    }
+  }
+
+  var avgOverall = (totalOverall / count).toFixed(1);
+  var avgEngagement = (totalEngagement / count).toFixed(1);
+  var recommendPercent = Math.round((recommendCount / count) * 100);
+
+  var avgOverallStars = '⭐'.repeat(Math.round(avgOverall));
+  var engagementEmojis = ['😞', '😕', '😐', '😊', '😍'];
+  var avgEngagementEmoji = engagementEmojis[Math.round(avgEngagement) - 1] || '';
+
+  return {
+    avgOverall: avgOverall,
+    avgOverallStars: avgOverallStars,
+    avgEngagement: avgEngagement,
+    avgEngagementEmoji: avgEngagementEmoji,
+    recommendPercent: recommendPercent,
+    issuesCount: issuesCount
+  };
 }
 
 // Helper function to create response with CORS headers
@@ -172,79 +379,24 @@ function sanitize(input) {
   return input.substring(0, 10000);
 }
 
-// Helper function to send email notification
-function sendEmailNotification(data, timestamp) {
-  if (!NOTIFICATION_EMAIL || NOTIFICATION_EMAIL === 'your-email@example.com') {
-    Logger.log('Email notification skipped: No valid email configured');
-    return;
-  }
-
-  // Create readable labels for ratings
-  var overallStars = '⭐'.repeat(parseInt(data.overall_rating) || 0);
-  var engagementEmojis = ['😞', '😕', '😐', '😊', '😍'];
-  var engagementDisplay = engagementEmojis[parseInt(data.child_engagement) - 1] || data.child_engagement;
-
-  // Format issues array
-  var issuesText = 'None reported';
-  if (Array.isArray(data.issues) && data.issues.length > 0) {
-    if (data.issues.includes('no_issues')) {
-      issuesText = '✓ No issues';
-    } else {
-      issuesText = data.issues.join(', ');
+// Function to set up the daily trigger automatically
+// Run this once manually after deploying the script
+function setupDailyTrigger() {
+  // Delete existing triggers to avoid duplicates
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'sendDailyDigest') {
+      ScriptApp.deleteTrigger(triggers[i]);
     }
   }
 
-  // Determine language for subject line
-  var langLabel = data.language === 'en' ? 'English' : '中文';
+  // Create new daily trigger
+  ScriptApp.newTrigger('sendDailyDigest')
+    .timeBased()
+    .atHour(DIGEST_TIME_HOUR)
+    .everyDays(1)
+    .create();
 
-  // Build email subject
-  var subject = '📝 New Feedback: English ABCs (' + overallStars + ' - ' + langLabel + ')';
-
-  // Build email body
-  var body = 'New feedback received for English ABCs closed testing!\n\n';
-  body += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-  body += '⏰ SUBMITTED: ' + Utilities.formatDate(timestamp, Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm:ss') + '\n';
-  body += '🌐 LANGUAGE: ' + langLabel + '\n';
-  body += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
-
-  body += '📊 RATINGS:\n';
-  body += '  • Overall Experience: ' + overallStars + ' (' + data.overall_rating + '/5)\n';
-  body += '  • Ease of Use: ' + (data.ease_of_use || 'N/A') + '\n';
-  body += '  • Child Engagement: ' + engagementDisplay + ' (' + data.child_engagement + '/5)\n';
-  body += '  • Learning Value: ' + (data.learning_value || 'N/A') + '\n';
-  body += '  • Would Recommend: ' + (data.recommend || 'N/A') + '\n\n';
-
-  body += '🐛 TECHNICAL ISSUES:\n';
-  body += '  ' + issuesText + '\n';
-  if (data.issue_details && data.issue_details.trim()) {
-    body += '  Details: ' + data.issue_details.trim() + '\n';
-  }
-  body += '\n';
-
-  body += '💬 FEEDBACK:\n';
-  if (data.child_enjoyed && data.child_enjoyed.trim()) {
-    body += '  What child enjoyed:\n  ' + data.child_enjoyed.trim() + '\n\n';
-  }
-  if (data.suggestions && data.suggestions.trim()) {
-    body += '  Suggestions for improvement:\n  ' + data.suggestions.trim() + '\n\n';
-  }
-  if (data.other_comments && data.other_comments.trim()) {
-    body += '  Other comments:\n  ' + data.other_comments.trim() + '\n\n';
-  }
-
-  body += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-  body += '📊 View all responses:\n';
-  body += SpreadsheetApp.getActiveSpreadsheet().getUrl() + '\n';
-  body += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
-  body += 'English ABCs - Feedback Handler\n';
-  body += '李之茗外師 | www.englishteacher.com.tw\n';
-
-  // Send the email
-  MailApp.sendEmail({
-    to: NOTIFICATION_EMAIL,
-    subject: subject,
-    body: body
-  });
-
-  Logger.log('Email notification sent to: ' + NOTIFICATION_EMAIL);
+  Logger.log('Daily digest trigger created for ' + DIGEST_TIME_HOUR + ':00');
+  return 'Daily digest trigger set up successfully for ' + DIGEST_TIME_HOUR + ':00';
 }
