@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Feedback - English ABCs | 測試意見回饋</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans TC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #FFF8E1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #81C784 0%, #4CAF50 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .lang-switch {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .lang-switch button {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .lang-switch button:hover,
+        .lang-switch button.active {
+            background: white;
+            color: #4CAF50;
+        }
+
+        .mascot {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 50%;
+            padding: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .mascot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.05em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .intro {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h2 {
+            color: #4CAF50;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+        }
+
+        .question label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .required {
+            color: #f44336;
+        }
+
+        .rating {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rating input[type="radio"] {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 2em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            filter: grayscale(100%);
+            opacity: 0.3;
+        }
+
+        .rating input[type="radio"]:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-group label,
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .radio-group label:hover,
+        .checkbox-group label:hover {
+            background: #f5f5f5;
+        }
+
+        .radio-group input,
+        .checkbox-group input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 18px 30px;
+            background: linear-gradient(135deg, #81C784 0%, #4CAF50 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            background: #E8F5E9;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #4CAF50;
+        }
+
+        .success-message h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .branding {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .branding a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .branding a:hover {
+            text-decoration: underline;
+        }
+
+        [lang="en"] .zh-only,
+        [lang="zh-TW"] .en-only {
+            display: none;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="lang-switch">
+                <button onclick="setLanguage('en')" id="btn-en">English</button>
+                <button onclick="setLanguage('zh-TW')" id="btn-zh" class="active">繁體中文</button>
+            </div>
+
+            <div class="mascot">
+                <img src="little_chick_mascot_3D.png" alt="Mascot">
+            </div>
+
+            <h1>English ABCs</h1>
+            <p class="tagline en-only">Closed Testing Feedback</p>
+            <p class="tagline zh-only">封閉測試意見回饋</p>
+        </div>
+
+        <div class="content">
+            <div class="intro">
+                <p class="en-only"><strong>Thank you for testing English ABCs!</strong> Your feedback is invaluable in helping us improve the app. This survey takes about 3-5 minutes to complete.</p>
+                <p class="zh-only"><strong>感謝您測試 English ABCs！</strong>您的意見回饋對我們改進應用程式非常寶貴。此問卷約需 3-5 分鐘完成。</p>
+            </div>
+
+            <form id="feedback-form">
+                <!-- Overall Experience -->
+                <div class="form-section">
+                    <h2 class="en-only">Overall Experience</h2>
+                    <h2 class="zh-only">整體體驗</h2>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">How would you rate your overall experience with the app? <span class="required">*</span></span>
+                            <span class="zh-only">您如何評價使用本應用程式的整體體驗？<span class="required">*</span></span>
+                        </label>
+                        <div class="rating">
+                            <input type="radio" name="overall_rating" value="5" id="overall-5" required>
+                            <label for="overall-5">⭐</label>
+                            <input type="radio" name="overall_rating" value="4" id="overall-4">
+                            <label for="overall-4">⭐</label>
+                            <input type="radio" name="overall_rating" value="3" id="overall-3">
+                            <label for="overall-3">⭐</label>
+                            <input type="radio" name="overall_rating" value="2" id="overall-2">
+                            <label for="overall-2">⭐</label>
+                            <input type="radio" name="overall_rating" value="1" id="overall-1">
+                            <label for="overall-1">⭐</label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">How easy was the app to use? <span class="required">*</span></span>
+                            <span class="zh-only">應用程式使用起來有多容易？<span class="required">*</span></span>
+                        </label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="ease_of_use" value="very_easy" required>
+                                <span class="en-only">Very easy - even young children could use it independently</span>
+                                <span class="zh-only">非常容易 - 即使是小孩也能獨立使用</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="ease_of_use" value="easy">
+                                <span class="en-only">Easy - children needed minimal help</span>
+                                <span class="zh-only">容易 - 小孩只需要少量協助</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="ease_of_use" value="moderate">
+                                <span class="en-only">Moderate - some help was needed</span>
+                                <span class="zh-only">普通 - 需要一些協助</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="ease_of_use" value="difficult">
+                                <span class="en-only">Difficult - children needed a lot of help</span>
+                                <span class="zh-only">困難 - 小孩需要很多協助</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Child Engagement -->
+                <div class="form-section">
+                    <h2 class="en-only">Child Engagement & Learning</h2>
+                    <h2 class="zh-only">孩童參與度與學習</h2>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">How engaged was your child while using the app? <span class="required">*</span></span>
+                            <span class="zh-only">您的孩子使用應用程式時的參與度如何？<span class="required">*</span></span>
+                        </label>
+                        <div class="rating">
+                            <input type="radio" name="child_engagement" value="5" id="engagement-5" required>
+                            <label for="engagement-5">😍</label>
+                            <input type="radio" name="child_engagement" value="4" id="engagement-4">
+                            <label for="engagement-4">😊</label>
+                            <input type="radio" name="child_engagement" value="3" id="engagement-3">
+                            <label for="engagement-3">😐</label>
+                            <input type="radio" name="child_engagement" value="2" id="engagement-2">
+                            <label for="engagement-2">😕</label>
+                            <input type="radio" name="child_engagement" value="1" id="engagement-1">
+                            <label for="engagement-1">😞</label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">Do you think the app helps with learning ABCs and phonics? <span class="required">*</span></span>
+                            <span class="zh-only">您認為這個應用程式有助於學習字母和自然發音嗎？<span class="required">*</span></span>
+                        </label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="learning_value" value="very_helpful" required>
+                                <span class="en-only">Yes, very helpful</span>
+                                <span class="zh-only">是的，非常有幫助</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="learning_value" value="helpful">
+                                <span class="en-only">Yes, somewhat helpful</span>
+                                <span class="zh-only">是的，有些幫助</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="learning_value" value="neutral">
+                                <span class="en-only">Neutral - not sure yet</span>
+                                <span class="zh-only">普通 - 還不確定</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="learning_value" value="not_helpful">
+                                <span class="en-only">Not very helpful</span>
+                                <span class="zh-only">不太有幫助</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">What did your child enjoy most about the app?</span>
+                            <span class="zh-only">您的孩子最喜歡這個應用程式的哪個部分？</span>
+                        </label>
+                        <textarea name="child_enjoyed" rows="3" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <!-- Technical Issues -->
+                <div class="form-section">
+                    <h2 class="en-only">Technical Performance</h2>
+                    <h2 class="zh-only">技術表現</h2>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">Did you experience any of the following issues? (Select all that apply)</span>
+                            <span class="zh-only">您是否遇到以下任何問題？（可複選）</span>
+                        </label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="issues" value="no_issues">
+                                <span class="en-only">No issues - everything worked perfectly</span>
+                                <span class="zh-only">沒有問題 - 一切運作正常</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="issues" value="app_crashed">
+                                <span class="en-only">App crashed or closed unexpectedly</span>
+                                <span class="zh-only">應用程式當機或意外關閉</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="issues" value="slow_loading">
+                                <span class="en-only">App was slow to open or respond</span>
+                                <span class="zh-only">應用程式開啟或回應緩慢</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="issues" value="audio_problems">
+                                <span class="en-only">Audio didn't play or was unclear</span>
+                                <span class="zh-only">音訊無法播放或不清楚</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="issues" value="display_problems">
+                                <span class="en-only">Images or text didn't display correctly</span>
+                                <span class="zh-only">圖片或文字顯示不正確</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="issues" value="other">
+                                <span class="en-only">Other issues</span>
+                                <span class="zh-only">其他問題</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">If you experienced any issues, please describe them:</span>
+                            <span class="zh-only">如果您遇到任何問題，請描述：</span>
+                        </label>
+                        <textarea name="issue_details" rows="3" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <!-- Suggestions -->
+                <div class="form-section">
+                    <h2 class="en-only">Suggestions for Improvement</h2>
+                    <h2 class="zh-only">改進建議</h2>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">What would make the app better?</span>
+                            <span class="zh-only">什麼能讓這個應用程式變得更好？</span>
+                        </label>
+                        <textarea name="suggestions" rows="4" placeholder=""></textarea>
+                        <p class="help-text en-only">Ideas for new features, changes to existing features, or anything else you'd like to see.</p>
+                        <p class="help-text zh-only">新功能的想法、現有功能的改變，或任何您想看到的東西。</p>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">Would you recommend this app to other parents or teachers? <span class="required">*</span></span>
+                            <span class="zh-only">您會推薦這個應用程式給其他家長或老師嗎？<span class="required">*</span></span>
+                        </label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="recommend" value="definitely" required>
+                                <span class="en-only">Yes, definitely!</span>
+                                <span class="zh-only">會，一定會！</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recommend" value="probably">
+                                <span class="en-only">Yes, probably</span>
+                                <span class="zh-only">會，可能會</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recommend" value="maybe">
+                                <span class="en-only">Maybe</span>
+                                <span class="zh-only">也許</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recommend" value="probably_not">
+                                <span class="en-only">Probably not</span>
+                                <span class="zh-only">可能不會</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recommend" value="no">
+                                <span class="en-only">No</span>
+                                <span class="zh-only">不會</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <span class="en-only">Any other comments or feedback?</span>
+                            <span class="zh-only">其他意見或回饋？</span>
+                        </label>
+                        <textarea name="other_comments" rows="4" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button">
+                    <span class="en-only">Submit Feedback</span>
+                    <span class="zh-only">提交意見回饋</span>
+                </button>
+            </form>
+
+            <div class="success-message" id="success-message">
+                <h2 class="en-only">Thank You! 🎉</h2>
+                <h2 class="zh-only">謝謝您！🎉</h2>
+                <p class="en-only">Your feedback has been submitted successfully. We truly appreciate your help in making English ABCs better for young learners!</p>
+                <p class="zh-only">您的意見回饋已成功提交。我們非常感謝您幫助我們讓 English ABCs 變得更適合年幼學習者！</p>
+            </div>
+        </div>
+
+        <div class="branding">
+            <p class="en-only">Developed by <strong>李之茗外師</strong></p>
+            <p class="zh-only"><strong>李之茗外師</strong> 開發</p>
+            <a href="https://www.englishteacher.com.tw" target="_blank">www.englishteacher.com.tw</a>
+        </div>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-zh').classList.toggle('active', lang === 'zh-TW');
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // Load saved language preference or default to Chinese
+        const savedLang = localStorage.getItem('preferredLanguage') || 'zh-TW';
+        setLanguage(savedLang);
+
+        // Handle form submission
+        document.getElementById('feedback-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Disable submit button
+            const submitButton = this.querySelector('.submit-button');
+            submitButton.disabled = true;
+            submitButton.textContent = document.documentElement.lang === 'en' ? 'Submitting...' : '提交中...';
+
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+
+            // Handle checkboxes specially
+            const issues = [];
+            formData.getAll('issues').forEach(issue => issues.push(issue));
+
+            // Collect all other fields
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'issues') {
+                    data[key] = value;
+                }
+            }
+            data.issues = issues;
+            data.timestamp = new Date().toISOString();
+            data.language = document.documentElement.lang;
+
+            // TODO: Send data to your backend/Google Forms/etc.
+            console.log('Feedback data:', data);
+
+            // For now, simulate submission
+            setTimeout(() => {
+                // Hide form and show success message
+                document.getElementById('feedback-form').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+            }, 1000);
+        });
+
+        // Handle "No issues" checkbox - uncheck others when selected
+        const checkboxes = document.querySelectorAll('input[name="issues"]');
+        const noIssuesCheckbox = document.querySelector('input[value="no_issues"]');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.value === 'no_issues' && this.checked) {
+                    // Uncheck all other checkboxes
+                    checkboxes.forEach(cb => {
+                        if (cb !== this) cb.checked = false;
+                    });
+                } else if (this.checked && this.value !== 'no_issues') {
+                    // Uncheck "no issues" if any other checkbox is selected
+                    noIssuesCheckbox.checked = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
