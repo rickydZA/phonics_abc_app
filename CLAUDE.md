@@ -28,8 +28,8 @@ assets/
 ├── audio/                       # Voice recordings (a.mp3 - z.mp3)
 └── images/
     ├── a_apple.webp ... z_zebra.webp        # Letter images
-    ├── little_chick_mascot_3D.png           # App mascot
-    └── app_icon/                            # App launcher icons
+    └── app_icon/                            # App launcher icons & mascot
+        ├── app_icon.png                     # App mascot
         ├── app_icon_foreground.png
         └── app_icon_background.png
 
@@ -37,7 +37,7 @@ docs/                            # GitHub Pages website (englishabc.englishteach
 ├── index.html                   # Redirects to closed-test-landing.html
 ├── closed-test-landing.html     # Marketing page for closed testing
 ├── privacy-policy.html          # App privacy policy
-├── little_chick_mascot_3D.png   # Mascot for website
+├── app_icon.png                 # Mascot for website
 └── CNAME                        # Custom domain configuration
 
 marketing/                       # App store materials
