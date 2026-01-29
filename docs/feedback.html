@@ -578,15 +578,36 @@
             data.timestamp = new Date().toISOString();
             data.language = document.documentElement.lang;
 
-            // TODO: Send data to your backend/Google Forms/etc.
-            console.log('Feedback data:', data);
+            // Submit to Google Apps Script
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbweaJJTikxyQ-YAAqd9hhOUpvOzW49kcvkthkCSeoLkGsvYvnH1SFesc-T0CD658v0/exec';
 
-            // For now, simulate submission
-            setTimeout(() => {
+            fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors', // Required for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                // With no-cors mode, we can't read the response, but submission works
                 // Hide form and show success message
                 document.getElementById('feedback-form').style.display = 'none';
                 document.getElementById('success-message').style.display = 'block';
-            }, 1000);
+            })
+            .catch(error => {
+                // Re-enable submit button on error
+                submitButton.disabled = false;
+                submitButton.textContent = document.documentElement.lang === 'en' ? 'Submit Feedback' : '提交意見回饋';
+
+                // Show error message
+                const errorMsg = document.documentElement.lang === 'en'
+                    ? 'Sorry, there was an error submitting your feedback. Please try again.'
+                    : '抱歉，提交意見回饋時發生錯誤。請再試一次。';
+                alert(errorMsg);
+
+                console.error('Submission error:', error);
+            });
         });
 
         // Handle "No issues" checkbox - uncheck others when selected
